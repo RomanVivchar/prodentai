@@ -231,6 +231,8 @@ async def health_check(db: AsyncSession = Depends(get_db)):
         # Check Redis connection (if needed)
         import redis.asyncio as aioredis
 
+        # In Docker: use "redis://redis:6379" (service name)
+        # Locally: use "redis://localhost:6379"
         redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
         redis_client = aioredis.from_url(redis_url)
         await redis_client.ping()

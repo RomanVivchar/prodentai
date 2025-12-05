@@ -89,10 +89,17 @@
    DATABASE_URL=postgresql://user:password@localhost:5432/prodentai
    OPENAI_API_KEY=your-openai-key
    TELEGRAM_BOT_TOKEN=your-telegram-token
+   # Для локальной разработки:
    REDIS_URL=redis://localhost:6379
+   # В Docker Compose автоматически используется redis://redis:6379
    ALLOWED_ORIGINS=https://prodentai.tech,http://prodentai.tech
    AI_MODEL=gpt-3.5-turbo
    ```
+   
+   **Важно:** В `docker-compose.yml` уже правильно настроено:
+   - `REDIS_URL=redis://redis:6379` (используется имя сервиса, не localhost)
+   - `DATABASE_URL=postgresql://...@postgres:5432/...` (используется имя сервиса)
+   - `BACKEND_URL=http://backend:8000` (для telegram_bot)
 
 2. **Запуск:**
    ```bash

@@ -25,6 +25,8 @@ class Config:
     )
 
     # Redis
+    # In Docker: use "redis://redis:6379" (service name)
+    # Locally: use "redis://localhost:6379"
     REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 
     # Logging
