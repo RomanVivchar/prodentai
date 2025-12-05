@@ -194,6 +194,14 @@ async def startup_event():
 
     logging.basicConfig(level=logging.INFO)
 
+    # Run database migrations first
+    try:
+        from migrate_db import migrate_database
+        await migrate_database()
+        logger.info("Database migrations completed")
+    except Exception as e:
+        logger.warning(f"Migration check failed (may be expected): {e}")
+
     await init_db()
     await ml_manager.initialize_models()
 
