@@ -82,11 +82,13 @@ services:
       - backend
       - frontend
     volumes:
+      # Используйте nginx.conf.dev для разработки без SSL
+      # Для продакшена используйте nginx.conf (требует SSL сертификаты)
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - frontend_build:/usr/share/nginx/html:ro
-      # Монтируйте ваши существующие сертификаты Let's Encrypt
-      # Обычно они находятся в /etc/letsencrypt на хосте
-      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # Монтируйте ваши существующие сертификаты Let's Encrypt для продакшена
+      # Раскомментируйте для продакшена:
+      # - /etc/letsencrypt:/etc/letsencrypt:ro
 
 volumes:
   postgres_data:

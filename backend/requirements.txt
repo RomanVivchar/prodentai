@@ -1,6 +1,8 @@
 # Backend dependencies
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic>=2.0.0,<3.0.0
+pydantic-settings>=2.0.0
 sqlalchemy==2.0.23
 alembic==1.12.1
 psycopg2-binary==2.9.9
