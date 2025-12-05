@@ -1,0 +1,17 @@
+# Telegram Bot dependencies
+python-telegram-bot==20.7
+python-telegram-bot[webhooks]==20.7
+
+# Backend communication
+httpx==0.25.2
+aiohttp==3.9.1
+
+# Database
+asyncpg==0.29.0
+sqlalchemy==2.0.23
+
+# Environment
+python-dotenv==1.0.0
+
+# Logging
+loguru==0.7.2

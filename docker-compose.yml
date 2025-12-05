@@ -1,0 +1,93 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-prodentai}
+      POSTGRES_USER: ${POSTGRES_USER:-prodentai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-prodentai_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+
+  # FastAPI Backend
+  backend:
+    build: ./backend
+    restart: always
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-prodentai}:${POSTGRES_PASSWORD:-prodentai_password}@postgres:5432/${POSTGRES_DB:-prodentai}
+      - REDIS_URL=redis://redis:6379
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-https://prodentai.tech,http://prodentai.tech}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - AI_MODEL=${AI_MODEL:-gpt-3.5-turbo}
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./backend:/app
+      - ./shared:/shared
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+
+  # Telegram Bot
+  telegram_bot:
+    build: ./telegram_bot
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-prodentai}:${POSTGRES_PASSWORD:-prodentai_password}@postgres:5432/${POSTGRES_DB:-prodentai}
+      - REDIS_URL=redis://redis:6379
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+      - postgres
+      - redis
+      - backend
+    volumes:
+      - ./telegram_bot:/app
+    command: python main.py
+
+  # React Frontend - сборка статики
+  frontend:
+    build: ./web
+    restart: "no"
+    environment:
+      - REACT_APP_API_URL=https://prodentai.tech/api
+    volumes:
+      - frontend_build:/app/build
+    command: sh -c "npm run build && cp -r build/* /app/build/ && sleep infinity"
+    depends_on:
+      - backend
+
+  # Nginx Reverse Proxy
+  nginx:
+    build: ./nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+      - frontend
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - frontend_build:/usr/share/nginx/html:ro
+      # Монтируйте ваши существующие сертификаты Let's Encrypt
+      # Обычно они находятся в /etc/letsencrypt на хосте
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+
+volumes:
+  postgres_data:
+  frontend_build:
