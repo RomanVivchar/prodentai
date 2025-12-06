@@ -19,8 +19,7 @@ services:
     ports:
       - "6379:6379"
     command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
-    sysctls:
-      - vm.overcommit_memory=1
+    
 
   # FastAPI Backend
   backend:
