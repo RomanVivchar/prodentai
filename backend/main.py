@@ -13,9 +13,12 @@ import uvicorn
 from database import get_db, init_db
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer
+from pydantic import ValidationError
+from pydantic import ValidationError
 
 # Load environment variables FIRST, before importing MLServiceManager
 load_dotenv()
@@ -162,7 +165,7 @@ security = HTTPBearer()
 ml_manager = MLServiceManager()
 
 # Global exception handlers
-from fastapi import Request
+# Request уже импортирован выше
 
 
 @app.exception_handler(IntegrityError)
@@ -177,7 +180,37 @@ async def integrity_error_handler(request: Request, exc: IntegrityError):
 @app.exception_handler(ValueError)
 async def value_error_handler(request: Request, exc: ValueError):
     """Handle value errors"""
+    logger.error(f"ValueError: {str(exc)} | Path: {request.url.path} | Method: {request.method}")
     return JSONResponse(status_code=400, content={"detail": str(exc)})
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Handle request validation errors with detailed logging"""
+    logger.error(
+        f"RequestValidationError: {exc.errors()} | Path: {request.url.path} | "
+        f"Method: {request.method} | Headers: {dict(request.headers)}"
+    )
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": exc.errors(),
+            "body": exc.body if hasattr(exc, 'body') else None
+        }
+    )
+
+
+@app.exception_handler(ValidationError)
+async def pydantic_validation_exception_handler(request: Request, exc: ValidationError):
+    """Handle Pydantic validation errors"""
+    logger.error(
+        f"Pydantic ValidationError: {exc.errors()} | Path: {request.url.path} | "
+        f"Method: {request.method}"
+    )
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()}
+    )
 
 
 # Include routers
