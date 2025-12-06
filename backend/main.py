@@ -194,15 +194,17 @@ async def startup_event():
 
     logging.basicConfig(level=logging.INFO)
 
-    # Run database migrations first
+    # Сначала создаем таблицы (если их нет)
+    await init_db()
+    logger.info("Database tables created/verified")
+
+    # Затем запускаем миграции (для добавления недостающих колонок в существующие таблицы)
     try:
         from migrate_db import migrate_database
         await migrate_database()
         logger.info("Database migrations completed")
     except Exception as e:
         logger.warning(f"Migration check failed (may be expected): {e}")
-
-    await init_db()
     await ml_manager.initialize_models()
 
     # Log ML service status

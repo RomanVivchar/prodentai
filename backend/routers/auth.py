@@ -25,13 +25,16 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/token")
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
-    username: Optional[str] = None
+    first_name: str
+    last_name: str
 
 
 class UserResponse(BaseModel):
     id: int
     email: Optional[str]
     username: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
     telegram_id: Optional[int]
 
     class Config:
@@ -71,7 +74,10 @@ async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
 
     hashed_password = get_password_hash(user.password)
     db_user = User(
-        email=user.email, username=user.username, hashed_password=hashed_password
+        email=user.email,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        hashed_password=hashed_password
     )
     db.add(db_user)
     await db.commit()

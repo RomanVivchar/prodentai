@@ -105,8 +105,12 @@ const Profile: React.FC = () => {
             <p className="text-gray-900">{user.email || 'Не указан'}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Имя пользователя</label>
-            <p className="text-gray-900">{user.username || 'Не указано'}</p>
+            <label className="block text-sm font-medium text-gray-700">Имя</label>
+            <p className="text-gray-900">{user.first_name || 'Не указано'}</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Фамилия</label>
+            <p className="text-gray-900">{user.last_name || 'Не указано'}</p>
           </div>
           {user.telegram_id && (
             <div>

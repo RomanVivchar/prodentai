@@ -5,7 +5,8 @@ import toast from 'react-hot-toast';
 const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -23,7 +24,8 @@ const Register: React.FC = () => {
         body: JSON.stringify({
           email,
           password,
-          username: username || undefined,
+          first_name: firstName,
+          last_name: lastName,
         }),
       });
 
@@ -64,14 +66,28 @@ const Register: React.FC = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Имя пользователя (опционально)
+              Имя
             </label>
             <input
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
               className="form-input w-full"
-              placeholder="username"
+              placeholder="Иван"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Фамилия
+            </label>
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+              className="form-input w-full"
+              placeholder="Иванов"
             />
           </div>
           <div>
