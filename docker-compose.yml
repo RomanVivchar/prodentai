@@ -64,7 +64,7 @@ services:
     build: ./web
     restart: "no"
     environment:
-      - REACT_APP_API_URL=https://prodentai.tech/api
+      - REACT_APP_API_URL=https://prodentai.tech
     volumes:
       - frontend_build:/app/build
     command: sh -c "npm run build && cp -r build/* /app/build/ && sleep infinity"

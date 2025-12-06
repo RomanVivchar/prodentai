@@ -15,7 +15,9 @@ http {
         server backend:8000;
     }
     
-    # HTTP server (для разработки без SSL)
+    # HTTP server (SSL termination на балансировщике)
+    # Если балансировщик не делает редирект, можно добавить редирект здесь
+    # Но обычно балансировщик сам делает редирект HTTP -> HTTPS
     server {
         listen 80;
         server_name localhost prodentai.tech www.prodentai.tech;
@@ -26,7 +28,10 @@ http {
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+            # Важно: указываем, что оригинальный запрос был HTTPS
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Port 443;
             proxy_read_timeout 300s;
             proxy_send_timeout 300s;
             proxy_connect_timeout 300s;

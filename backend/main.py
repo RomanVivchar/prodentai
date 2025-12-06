@@ -138,16 +138,21 @@ async def log_requests(request: Request, call_next):
 
 
 # CORS middleware
-ALLOWED_ORIGINS = os.getenv(
-    "ALLOWED_ORIGINS", "https://prodentai.tech,http://prodentai.tech"
-).split(",")
+ALLOWED_ORIGINS_STR = os.getenv(
+    "ALLOWED_ORIGINS", "https://prodentai.tech,http://prodentai.tech,https://www.prodentai.tech,http://www.prodentai.tech"
+)
+# Убираем пробелы и фильтруем пустые значения
+ALLOWED_ORIGINS = [origin.strip() for origin in ALLOWED_ORIGINS_STR.split(",") if origin.strip()]
+
+logger.info(f"CORS allowed origins: {ALLOWED_ORIGINS}")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Security
