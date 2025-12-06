@@ -72,7 +72,7 @@ const Reminders: React.FC = () => {
   const checkTelegramRegistration = async (user_id: number) => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/users/check-telegram/${user_id}`
+        `${process.env.REACT_APP_API_URL || '/api'}/users/check-telegram/${user_id}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -91,7 +91,7 @@ const Reminders: React.FC = () => {
   const fetchReminders = async (user_id: number) => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/reminders/user/${user_id}`
+        `${process.env.REACT_APP_API_URL || '/api'}/reminders/user/${user_id}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -123,7 +123,7 @@ const Reminders: React.FC = () => {
     try {
       // Сначала привязываем telegram_id
       const linkResponse = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/users/link-telegram/${userId}`,
+        `${process.env.REACT_APP_API_URL || '/api'}/users/link-telegram/${userId}`,
         {
           method: 'POST',
           headers: {
@@ -136,7 +136,7 @@ const Reminders: React.FC = () => {
       if (linkResponse.ok) {
         // Проверяем, что пользователь зарегистрирован в боте
         const checkResponse = await fetch(
-          `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/users/check-telegram/${userId}`
+          `${process.env.REACT_APP_API_URL || '/api'}/users/check-telegram/${userId}`
         );
         
         if (checkResponse.ok) {
@@ -173,7 +173,7 @@ const Reminders: React.FC = () => {
     
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/reminders/create`,
+        `${process.env.REACT_APP_API_URL || '/api'}/reminders/create`,
         {
           method: 'POST',
           headers: {
@@ -213,7 +213,7 @@ const Reminders: React.FC = () => {
   const toggleReminder = async (id: number) => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/reminders/toggle/${id}`,
+        `${process.env.REACT_APP_API_URL || '/api'}/reminders/toggle/${id}`,
         {
           method: 'PUT',
         }
@@ -241,7 +241,7 @@ const Reminders: React.FC = () => {
   const deleteReminder = async (id: number) => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/reminders/${id}`,
+        `${process.env.REACT_APP_API_URL || '/api'}/reminders/${id}`,
         {
           method: 'DELETE',
         }

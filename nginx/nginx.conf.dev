@@ -16,11 +16,11 @@ http {
     }
     
     # HTTP server (SSL termination на балансировщике)
-    # Если балансировщик не делает редирект, можно добавить редирект здесь
-    # Но обычно балансировщик сам делает редирект HTTP -> HTTPS
+    # Балансировщик делает SSL termination и передает запросы по HTTP
+    # с заголовком X-Forwarded-Proto: https
     server {
         listen 80;
-        server_name localhost prodentai.tech www.prodentai.tech;
+        server_name prodentai.tech www.prodentai.tech localhost;
         
         # Backend API
         location /api/ {
@@ -50,6 +50,42 @@ http {
             root /usr/share/nginx/html;
             expires 1y;
             add_header Cache-Control "public, immutable";
+        }
+        
+        # Handle missing favicon files gracefully
+        location = /favicon.ico {
+            root /usr/share/nginx/html;
+            try_files $uri =204;
+            access_log off;
+            log_not_found off;
+        }
+        
+        location = /favicon.svg {
+            root /usr/share/nginx/html;
+            try_files $uri =204;
+            access_log off;
+            log_not_found off;
+        }
+        
+        location = /logo192.png {
+            root /usr/share/nginx/html;
+            try_files $uri =204;
+            access_log off;
+            log_not_found off;
+        }
+        
+        # Block common scanner paths
+        location ~ /\.(git|env|htaccess|htpasswd) {
+            deny all;
+            access_log off;
+            log_not_found off;
+        }
+        
+        # Security: block access to hidden files
+        location ~ /\. {
+            deny all;
+            access_log off;
+            log_not_found off;
         }
     }
 }

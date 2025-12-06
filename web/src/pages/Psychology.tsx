@@ -60,9 +60,9 @@ const Psychology: React.FC = () => {
     setLoading(true);
 
     try {
-      // Вызываем реальный API
+      // Вызываем реальный API (используем относительный путь)
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/psychology/chat`,
+        `${process.env.REACT_APP_API_URL || '/api'}/psychology/chat`,
         {
           method: 'POST',
           headers: {

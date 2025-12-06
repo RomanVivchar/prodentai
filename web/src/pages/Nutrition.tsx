@@ -38,14 +38,15 @@ const Nutrition: React.FC = () => {
 
     setLoading(true);
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+      // Используем относительный путь для избежания проблем с CORS и протоколами
+      const apiUrl = process.env.REACT_APP_API_URL || '/api';
       
       // Формируем полное описание с учетом сопутствующих продуктов
       const fullDescription = accompanyingFoods 
         ? `${foodDescription}. Сопутствующие продукты: ${accompanyingFoods}`
         : foodDescription;
       
-      const response = await fetch(`${apiUrl}/api/nutrition/analyze`, {
+      const response = await fetch(`${apiUrl}/nutrition/analyze`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -140,11 +141,12 @@ const Nutrition: React.FC = () => {
 
     setLoading(true);
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+      // Используем относительный путь для избежания проблем с CORS и протоколами
+      const apiUrl = process.env.REACT_APP_API_URL || '/api';
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch(`${apiUrl}/api/nutrition/analyze-image?user_id=${userId}`, {
+      const response = await fetch(`${apiUrl}/nutrition/analyze-image?user_id=${userId}`, {
         method: 'POST',
         body: formData,
       });

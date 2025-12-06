@@ -13,12 +13,13 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+      // Используем относительный путь для избежания проблем с CORS и протоколами
+      const apiUrl = process.env.REACT_APP_API_URL || '/api';
       const formData = new FormData();
       formData.append('username', email);
       formData.append('password', password);
 
-      const response = await fetch(`${apiUrl}/api/auth/token`, {
+      const response = await fetch(`${apiUrl}/auth/token`, {
         method: 'POST',
         body: formData,
       });

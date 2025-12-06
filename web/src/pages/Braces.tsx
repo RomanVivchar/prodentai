@@ -378,8 +378,9 @@ const Braces: React.FC = () => {
     setLoading(true);
 
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/facts/braces/chat`, {
+      // Используем относительный путь для избежания проблем с CORS и протоколами
+      const apiUrl = process.env.REACT_APP_API_URL || '/api';
+      const response = await fetch(`${apiUrl}/facts/braces/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -218,8 +218,9 @@ const RiskAssessment: React.FC = () => {
 
     setLoading(true);
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/risks/assess`, {
+      // Используем относительный путь для избежания проблем с CORS и протоколами
+      const apiUrl = process.env.REACT_APP_API_URL || '/api';
+      const response = await fetch(`${apiUrl}/risks/assess`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

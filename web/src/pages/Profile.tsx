@@ -16,12 +16,13 @@ const Profile: React.FC = () => {
           return;
         }
 
-        const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+        // Используем относительный путь для избежания проблем с CORS и протоколами
+        const apiUrl = process.env.REACT_APP_API_URL || '/api';
         const userId = localStorage.getItem('user_id');
         
         if (!userId) {
           // Попробуем получить через /me
-          const meResponse = await fetch(`${apiUrl}/api/auth/me`, {
+          const meResponse = await fetch(`${apiUrl}/auth/me`, {
             headers: {
               'Authorization': `Bearer ${token}`,
             },
@@ -30,7 +31,7 @@ const Profile: React.FC = () => {
           if (meResponse.ok) {
             const meData = await meResponse.json();
             localStorage.setItem('user_id', meData.id.toString());
-            const profileResponse = await fetch(`${apiUrl}/api/users/profile/${meData.id}`, {
+            const profileResponse = await fetch(`${apiUrl}/users/profile/${meData.id}`, {
               headers: {
                 'Authorization': `Bearer ${token}`,
               },
@@ -42,7 +43,7 @@ const Profile: React.FC = () => {
             navigate('/login');
           }
         } else {
-          const response = await fetch(`${apiUrl}/api/users/profile/${userId}`, {
+          const response = await fetch(`${apiUrl}/users/profile/${userId}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
             },

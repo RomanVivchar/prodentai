@@ -18,6 +18,9 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    sysctls:
+      - vm.overcommit_memory=1
 
   # FastAPI Backend
   backend:
@@ -64,7 +67,7 @@ services:
     build: ./web
     restart: "no"
     environment:
-      - REACT_APP_API_URL=https://prodentai.tech
+      - REACT_APP_API_URL=/api
     volumes:
       - frontend_build:/app/build
     command: sh -c "npm run build && cp -r build/* /app/build/ && sleep infinity"
